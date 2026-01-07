@@ -615,9 +615,16 @@ variable "custom_private_endpoints" {
   type = list(object({
     resource_id       = string
     subresource_names = list(string)
-    private_dns_zone  = optional(string, "")
-    private_dns_name  = optional(string, "")
+    private_dns_zone  = string
+    private_dns_name  = string
     create_dns_zone   = optional(bool, true)
+    request_message   = optional(string, "Private endpoint request for DataRobot")
   }))
   default = []
+}
+
+variable "private_storage_endpoints" {
+  description = "A list of private storage endpoints"
+  type        = list(string)
+  default     = ["blob", "dfs"]
 }

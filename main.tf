@@ -104,8 +104,6 @@ module "storage" {
   network_rules_default_action  = var.storage_network_rules_default_action
   public_ip_allow_list          = [for cidr in var.storage_public_ip_allow_list : replace(cidr, "/32", "")]
   virtual_network_subnet_ids    = var.storage_virtual_network_subnet_ids
-  vnet_id                       = local.vnet_id
-  subnet_id                     = local.aks_nodes_subnet_id
 
   tags = var.tags
 }
@@ -198,13 +196,13 @@ module "app_identity" {
   resource_group_name = local.resource_group_name
   location            = var.location
 
-  name                        = module.naming.user_assigned_identity.name
-  aks_oidc_issuer_url         = local.aks_cluster_oidc_issuer_url
-  storage_account_id          = local.storage_account_id
-  acr_id                      = local.container_registry_id
-  datarobot_namespace         = var.datarobot_namespace
-  datarobot_service_accounts  = var.datarobot_service_accounts
-  existing_storage_account_id = var.existing_storage_account_id
+  name                       = module.naming.user_assigned_identity.name
+  aks_oidc_issuer_url        = local.aks_cluster_oidc_issuer_url
+  storage_account_id         = local.storage_account_id
+  acr_id                     = local.container_registry_id
+  datarobot_namespace        = var.datarobot_namespace
+  datarobot_service_accounts = var.datarobot_service_accounts
+  create_storage             = var.create_storage
 
   tags = var.tags
 }
@@ -423,21 +421,27 @@ module "descheduler" {
 
 
 ################################################################################
-# Custom Private Endpoints
+# Private Endpoints
 ################################################################################
 
-module "custom_private_endpoints" {
-  source   = "./modules/custom-private-endpoints"
-  for_each = { for pe in var.custom_private_endpoints : pe.private_dns_name => pe }
+locals {
+
+}
+
+module "private_endpoints" {
+  source = "./modules/private-endpoints"
 
   resource_group_name = local.resource_group_name
   location            = var.location
   name                = var.name
 
+  storage_account_id = local.storage_account_id
+
   network_id = local.vnet_id
   subnet_id  = local.aks_nodes_subnet_id
 
-  endpoint_config = each.value
+  private_endpoint_config   = var.custom_private_endpoints
+  private_storage_endpoints = var.private_storage_endpoints
 
   tags = var.tags
 }

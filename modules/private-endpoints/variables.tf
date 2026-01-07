@@ -28,13 +28,24 @@ variable "network_id" {
   type        = string
 }
 
-variable "endpoint_config" {
-  description = "Configuration object for the private endpoint"
-  type = object({
+variable "private_endpoint_config" {
+  description = "A list of custom private endpoints"
+  type = list(object({
     resource_id       = string
     subresource_names = list(string)
     private_dns_zone  = string
     private_dns_name  = string
-    create_dns_zone   = bool
-  })
+    create_dns_zone   = optional(bool, true)
+    request_message   = optional(string, "Private endpoint request for DataRobot")
+  }))
+}
+
+variable "storage_account_id" {
+  description = "ID of the Storage Account"
+  type        = string
+}
+
+variable "private_storage_endpoints" {
+  description = "A list of private storage endpoints"
+  type        = list(string)
 }
