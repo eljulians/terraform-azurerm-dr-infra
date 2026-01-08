@@ -77,7 +77,7 @@ resource "azurerm_role_assignment" "grafana_monitor_reader" {
 
 data "azurerm_monitor_data_collection_rule" "data_collection_rule" {
   name                = azurerm_monitor_workspace.observability_monitor_workspace.name
-  resource_group_name = "MA_${azurerm_monitor_workspace.observability_monitor_workspace.name}_eastus_managed"
+  resource_group_name = "MA_${azurerm_monitor_workspace.observability_monitor_workspace.name}_${var.location}_managed"
 }
 
 resource "azurerm_role_assignment" "prometheus_publisher_role_amw" {

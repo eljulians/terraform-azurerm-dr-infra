@@ -203,3 +203,8 @@ output "observability_grafana_endpoint" {
   description = "The endpoint URL for the Azure Managed Grafana instance for observability"
   value       = try(module.observability[0].grafana_endpoint, null)
 }
+
+output "observability_user_assigned_identity_client_id" {
+  description = "The client_id of the user assigned identity"
+  value       = try(module.observability[0].user_assigned_identity_client_id, null)
+}
