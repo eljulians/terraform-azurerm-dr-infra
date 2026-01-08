@@ -639,4 +639,24 @@ variable "observability_grafana_major_version" {
   description = "The major version of Grafana to deploy in the observability module."
   type        = number
   default     = 11
+
+# Custom Private Endpoints
+################################################################################
+variable "custom_private_endpoints" {
+  description = "A list of custom private endpoints"
+  type = list(object({
+    resource_id       = string
+    subresource_names = list(string)
+    private_dns_zone  = string
+    private_dns_name  = string
+    create_dns_zone   = optional(bool, true)
+    request_message   = optional(string, "Private endpoint request for DataRobot")
+  }))
+  default = []
+}
+
+variable "private_storage_endpoints" {
+  description = "A list of private storage endpoints"
+  type        = list(string)
+  default     = ["blob", "dfs"]
 }
